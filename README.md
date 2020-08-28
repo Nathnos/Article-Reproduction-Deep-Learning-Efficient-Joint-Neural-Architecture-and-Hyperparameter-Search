@@ -1,6 +1,8 @@
-# Article Reproduction : Efficient Joint Neural Architecture and Hyperparameter Search
+# Article Reproduction : Deep Learning Efficient Joint Neural Architecture and Hyperparameter Search
 
 Original paper : https://arxiv.org/abs/1807.06906
+
+Original authors : Arber Zela, Aaron Klein, Stefan Falkner, Frank Hutter
 
 ## Content
 
