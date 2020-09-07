@@ -1,6 +1,8 @@
 # Article Reproduction : Deep Learning Efficient Joint Neural Architecture and Hyperparameter Search
 
-Original paper : https://arxiv.org/abs/1807.06906
+## Informations
+
+Link to the original paper : https://arxiv.org/abs/1807.06906
 
 Original authors : Arber Zela, Aaron Klein, Stefan Falkner, Frank Hutter
 
@@ -9,6 +11,10 @@ Author : Lorenzo VILLARD
 ## Content
 
 On this github repo, you can find my paper and all the programs I used to write it.
+
+## Data
+
+The data used can be found here : https://github.com/laxmimerit/dog-cat-full-dataset
 
 ## Context
 
