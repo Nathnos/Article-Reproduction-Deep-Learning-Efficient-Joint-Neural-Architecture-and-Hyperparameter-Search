@@ -74,6 +74,7 @@ def get_sets():
             target_size=INPUT_SIZE,
             batch_size=32,
             class_mode='binary')
+    #Those are (x, y) tuples, x being a numpy array of the image, and y label
     return training_set, test_set
 
 def train(classifier, training_set):
