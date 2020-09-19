@@ -5,31 +5,37 @@ from keras.models import Sequential, load_model, save_model
 from keras.layers import Convolution2D, MaxPooling2D, Flatten, Dense
 from keras.preprocessing.image import ImageDataGenerator
 
-INPUT_SIZE = (64, 64) #(128, 128) #For pictures
-NEW_MODEL = False #If False, loads a model
-#Number of layers
-NB_CONV_LAYERS = 2
+#Global settings
+NEW_MODEL = True #If False, loads a model
+EPOCHS = 20
+
+#Convolution
+INPUT_SIZE = (128, 128) #For pictures
+NB_CONV_LAYERS = 2 #Number of layers
 #Conv + relu
 CONV_FILTERS = 32
-KERNEL_SZ = 3
-CONV_STRIDES = 1
+KERNEL_SIZE = 3
+CONV_STRIDES = 2
 #Max pool
 CONV_MAX_POOL_SIZE = (2, 2)
+
 #Dense
-NB_DENSE_LAYERS = 1
-STARTING_UNITS = 128
-UNITS_FACTOR = 2
-EPOCHS = 1 #20
+NB_DENSE_LAYERS = 3
+STARTING_UNITS = 64
+#If UNITS_FACTOR = 2, each layer double the number of neurones
+UNITS_FACTOR = 1.5
 
 def setup(classifier) :
     #First, compulsory, layer
-    classifier.add(Convolution2D(filters=CONV_FILTERS, kernel_size=KERNEL_SZ,
-        strides=CONV_STRIDES, input_shape=[*INPUT_SIZE, 3], activation="relu"))
+    classifier.add(Convolution2D(filters=CONV_FILTERS,
+        kernel_size=KERNEL_SIZE, strides=CONV_STRIDES,
+        input_shape=[*INPUT_SIZE, 3], activation="relu"))
     classifier.add(MaxPooling2D(pool_size=CONV_MAX_POOL_SIZE))
     #Other layers
     for i in range(1, NB_CONV_LAYERS):
         classifier.add(Convolution2D(filters=CONV_FILTERS,
-            kernel_size=KERNEL_SZ, strides=CONV_STRIDES, activation="relu"))
+            kernel_size=KERNEL_SIZE, strides=CONV_STRIDES,
+            activation="relu"))
         classifier.add(MaxPooling2D(pool_size=CONV_MAX_POOL_SIZE))
     classifier.add(Flatten())
 
@@ -41,7 +47,7 @@ def setup(classifier) :
 
     #Fully Connected Network
     for i in range(NB_DENSE_LAYERS):
-        classifier.add(Dense(units=STARTING_UNITS*UNITS_FACTOR**i,
+        classifier.add(Dense(units=(int)(STARTING_UNITS*UNITS_FACTOR**i),
             activation="relu"))
     #Last layer :
     classifier.add(Dense(units=1, activation="sigmoid"))
