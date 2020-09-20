@@ -6,8 +6,10 @@ from keras.layers import Convolution2D, MaxPooling2D, Flatten, Dense
 from keras.preprocessing.image import ImageDataGenerator
 
 #Global settings
-NEW_MODEL = True #If False, loads a model
-EPOCHS = 20
+NEW_MODEL = False #If False, loads a model
+MORE_TRAINING = True #In case NEW_MODEL is False
+EPOCHS = 2
+MODEL_NB = 0
 
 #Convolution
 INPUT_SIZE = (128, 128) #For pictures
@@ -91,12 +93,16 @@ def print_score(classifier, test_set):
 def main():
     classifier = Sequential()
     training_set, test_set = get_sets()
+    def launch_training(): #Closure
+        train(classifier, training_set)
+        save_model(classifier, f'tests/model{MODEL_NB}.h5')
     if NEW_MODEL :
         setup(classifier)
-        train(classifier, training_set)
-        save_model(classifier, 'tests/model0.h5')
+        launch_training()
     else:
-        classifier = load_model('tests/model0.h5')
+        classifier = load_model(f'tests/model{MODEL_NB}.h5')
+        if MORE_TRAINING:
+            launch_training()
     print_score(classifier, test_set)
 
 if __name__ == "__main__":
