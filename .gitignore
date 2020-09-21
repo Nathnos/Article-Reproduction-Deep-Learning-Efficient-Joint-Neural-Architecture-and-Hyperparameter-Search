@@ -2,3 +2,4 @@
 data
 env
 tests/model*
+tests/image*.jpeg
