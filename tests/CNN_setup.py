@@ -12,7 +12,8 @@ import numpy as np
 # Fixed hyperparameters
 EPOCHS = 1
 UNITS_FACTOR = 2  # Each layer double the number of neurones
-INPUT_SIZE = (128, 128)  # For pictures
+MAX_NEURONES = 128
+INPUT_SIZE = (258, 258)  # For pictures
 STARTING_UNITS = 64  # For Dense layers
 CONV_STRIDES = 2
 CONV_MAX_POOL_SIZE = (2, 2)
@@ -32,6 +33,7 @@ def setup(classifier, hyperparameters):
         nb_filters,
         kernel_size,
     ) = hyperparameters
+    print("Nouveau Round : ", hyperparameters)
     # First layer, compulsory
     classifier.add(
         Convolution2D(
@@ -41,27 +43,24 @@ def setup(classifier, hyperparameters):
             input_shape=(*INPUT_SIZE, 3),
             activation="relu",
             kernel_regularizer=l2(weight_decay),
+            padding="valid",
         )
     )
-    classifier.add(
-        MaxPooling2D(pool_size=CONV_MAX_POOL_SIZE, data_format="channels_last")
-    )
+    classifier.add(MaxPooling2D(pool_size=CONV_MAX_POOL_SIZE))
     # Other layers
     for i in range(1, conv_layers):
         classifier.add(
             Convolution2D(
-                filters=nb_filters * UNITS_FACTOR ** i,
+                filters=min(nb_filters * UNITS_FACTOR ** i, MAX_NEURONES),
                 kernel_size=(kernel_size, kernel_size),
-                strides=1,
+                strides=CONV_STRIDES,
                 activation="relu",
                 kernel_regularizer=l2(weight_decay),
+                padding="same",
             )
         )
-        classifier.add(
-            MaxPooling2D(
-                pool_size=CONV_MAX_POOL_SIZE, data_format="channels_last"
-            )
-        )
+        classifier.add(MaxPooling2D(pool_size=CONV_MAX_POOL_SIZE))
+
     classifier.add(Dropout(dropout_rate))
     classifier.add(Flatten())
 
@@ -69,7 +68,7 @@ def setup(classifier, hyperparameters):
     for i in range(dense_layers):
         classifier.add(
             Dense(
-                units=(int)(STARTING_UNITS * UNITS_FACTOR ** i),
+                units=min(STARTING_UNITS * UNITS_FACTOR ** i, MAX_NEURONES),
                 activation="relu",
                 kernel_regularizer=l2(weight_decay),
             )
@@ -112,6 +111,7 @@ def get_sets(batch_size):
 def train(classifier, training_set, batch_size):
     classifier.fit(
         training_set,
-        steps_per_epoch=TRAINING_SET_SIZE / batch_size,
+        # steps_per_epoch=TRAINING_SET_SIZE / batch_size,
+        steps_per_epoch=5,
         epochs=EPOCHS,
     )
