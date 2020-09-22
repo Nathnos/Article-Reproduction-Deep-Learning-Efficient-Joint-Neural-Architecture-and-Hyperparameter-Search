@@ -5,25 +5,18 @@ from keras.models import Sequential, load_model, save_model
 import argparse
 import importlib
 
-from CNN_tools import setup, get_sets, train, predict
+from CNN_setup import setup, get_sets, train
+from tools import predict, print_score, init_parser
+from CNN_search import fit_with
 
 #Global settings
 NEW_MODEL = True #If False, loads a model
 MORE_TRAINING = True #In case NEW_MODEL is False
 MODEL_NB = 2
 
-def print_score(classifier, test_set):
-    score = classifier.evaluate(test_set, verbose=0)
-    print(f'Test loss: {score[0]:.3f} / Test accuracy: {score[1]:.3f}')
-
-def init_parser():
-    parser = argparse.ArgumentParser(description="CNN for Dogs/Cats")
-    parser.add_argument('--predict', '-p',
-        help='An image for the CNNto predict')
-    return parser.parse_args()
-
 
 def main():
+    #Only launch stuff
     args = init_parser()
     classifier = Sequential()
     model_name = f'tests/model{MODEL_NB}.h5'
