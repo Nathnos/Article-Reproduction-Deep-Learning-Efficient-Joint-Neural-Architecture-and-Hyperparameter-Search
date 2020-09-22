@@ -45,7 +45,6 @@ def fit_with(
         int(kernel_size),
     )
     batch_size = int(batch_size)
-    print("JEUIEIEAUI EAUIETUAIEUAIEAUIEAU", hyperparameters, batch_size)
     classifier = Sequential()
     training_set, test_set = get_sets(batch_size)
     setup(classifier, hyperparameters)
