@@ -7,10 +7,7 @@ from keras.preprocessing.image import load_img, img_to_array
 import numpy as np
 
 #Global settings
-NEW_MODEL = False #If False, loads a model
-MORE_TRAINING = False #In case NEW_MODEL is False
 EPOCHS = 20
-MODEL_NB = 0
 
 #Convolution
 INPUT_SIZE = (128, 128) #For pictures
@@ -25,7 +22,7 @@ CONV_MAX_POOL_SIZE = (2, 2)
 
 #Dense
 NB_DENSE_LAYERS = 3
-DENSE_DROPOUT_RATE = 0.25
+DENSE_DROPOUT_RATE = 0.5
 STARTING_UNITS = 64
 #If UNITS_FACTOR = 2, each layer double the number of neurones
 UNITS_FACTOR = 1.5
@@ -38,18 +35,12 @@ def setup(classifier) :
     classifier.add(MaxPooling2D(pool_size=CONV_MAX_POOL_SIZE))
     #Other layers
     for i in range(1, NB_CONV_LAYERS):
-        classifier.add(Convolution2D(filters=CONV_FILTERS,
+        classifier.add(Convolution2D(filters=CONV_FILTERS*2**i,
             kernel_size=KERNEL_SIZE, strides=CONV_STRIDES,
             activation="relu"))
         classifier.add(MaxPooling2D(pool_size=CONV_MAX_POOL_SIZE))
     classifier.add(Dropout(CONV_DROPOUT_RATE))
     classifier.add(Flatten())
-
-    """
-    kernel_size : 3, 5, 7…
-    filters : puissance de 2, on double à chaque couche
-    input_shape : on force toutes les images à la même taille
-    """
 
     #Fully Connected Network
     for i in range(NB_DENSE_LAYERS):

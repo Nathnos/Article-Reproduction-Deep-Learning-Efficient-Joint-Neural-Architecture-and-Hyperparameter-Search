@@ -3,3 +3,4 @@ data
 env
 tests/model*
 tests/image*.jpeg
+tests/__pycache__
