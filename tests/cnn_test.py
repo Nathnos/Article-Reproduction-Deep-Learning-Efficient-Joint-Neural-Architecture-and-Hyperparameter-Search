@@ -8,9 +8,9 @@ import importlib
 from CNN_tools import setup, get_sets, train, predict
 
 #Global settings
-NEW_MODEL = False #If False, loads a model
+NEW_MODEL = True #If False, loads a model
 MORE_TRAINING = True #In case NEW_MODEL is False
-MODEL_NB = 1
+MODEL_NB = 2
 
 def print_score(classifier, test_set):
     score = classifier.evaluate(test_set, verbose=0)
