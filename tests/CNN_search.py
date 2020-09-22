@@ -1,8 +1,9 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-from CNN_setup import setup, train, get_sets
-from CNN_setup import BATCH_SIZE, EPOCHS, TEST_SET_SIZE
+from keras.models import Sequential
+
+from CNN_setup import setup, train, get_sets, EPOCHS
 
 #Hyperparameters to tune
 lr = 0.01 # Learning rate
@@ -19,26 +20,26 @@ kernel_size = 3
 pbounds = {'lr' : (1e-4, 0.01),
     'momentum' : (0.7, 0.95),
     'lr_decay' : (0.7, 0.99),
-    'dropout_rate' : (0.25),
+    'dropout_rate' : (0.1, 0.5),
     'batch_size' : (16, 64),
     'conv_layers' : (2, 7),
     'dense_layers' : (2, 7),
     'nb_filters' : (16, 64),
     'kernel_size' : (2, 5)}
 
-test_set, training_set = get_sets()
 
-def fit_with(classifier, hyperparameters):
+def fit_with(hyperparameters, batch_size):
     classifier = Sequential()
+    training_set, test_set = get_sets(batch_size)
     setup(classifier, hyperparameters)
-    train(classifier, training_set, EPOCHS)
-    score = classifier.evaluate(test_set, steps=TEST_SET_SIZE/BATCH_SIZE,
-        verbose=0)
+    train(classifier, training_set, batch_size)
+    score = classifier.evaluate(test_set, steps=10, verbose=0)
     return score[1] #Accuracy
 
 def searching() :
     #TODO : loop
-    hyperparameters =  (lr, momentum, lr_decay, dropout_rate, batch_size,
+    hyperparameters =  (lr, momentum, lr_decay, dropout_rate,
     conv_layers, dense_layers, nb_filters, kernel_size) #TODO bay search
-    acc_score = fit_with(classifier, hyperparameters)
-    print(acc_score, hyperparameters) #TODO in a file
+    #batch_size = batch_size #TODO bay seach
+    acc_score = fit_with(hyperparameters, batch_size)
+    print(acc_score, hyperparameters, batch_size, EPOCHS) #TODO in a file
