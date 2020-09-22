@@ -4,14 +4,15 @@
 from keras.models import Sequential, load_model, save_model
 import argparse
 import importlib
-# 
+
+#
 # from CNN_setup import setup, get_sets, train
 # from tools import predict, print_score, init_parser
 from CNN_search import searching
 
-#Global settings
-NEW_MODEL = True #If False, loads a model
-MORE_TRAINING = True #In case NEW_MODEL is False
+# Global settings
+NEW_MODEL = True  # If False, loads a model
+MORE_TRAINING = True  # In case NEW_MODEL is False
 MODEL_NB = 2
 
 
@@ -36,6 +37,7 @@ def main():
     # print_score(classifier, test_set)
     # if args.predict is not None :
     #     predict(args.predict, classifier)
+
 
 if __name__ == "__main__":
     main()
