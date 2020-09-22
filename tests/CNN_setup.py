@@ -5,6 +5,7 @@ from keras.layers import Convolution2D, MaxPooling2D, Flatten, Dense, Dropout
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import load_img, img_to_array
 from keras.optimizers import RMSprop
+from keras.regularizers import l2
 import numpy as np
 
 
@@ -24,34 +25,43 @@ def setup(classifier, hyperparameters):
         lr,
         momentum,
         lr_decay,
+        weight_decay,
         dropout_rate,
         conv_layers,
         dense_layers,
         nb_filters,
         kernel_size,
     ) = hyperparameters
-    # First, compulsory, layer
+    # First layer, compulsory
     classifier.add(
         Convolution2D(
             filters=nb_filters,
-            kernel_size=kernel_size,
+            kernel_size=(kernel_size, kernel_size),
             strides=CONV_STRIDES,
-            input_shape=[*INPUT_SIZE, 3],
+            input_shape=(*INPUT_SIZE, 3),
             activation="relu",
+            kernel_regularizer=l2(weight_decay),
         )
     )
-    classifier.add(MaxPooling2D(pool_size=CONV_MAX_POOL_SIZE))
+    classifier.add(
+        MaxPooling2D(pool_size=CONV_MAX_POOL_SIZE, data_format="channels_last")
+    )
     # Other layers
     for i in range(1, conv_layers):
         classifier.add(
             Convolution2D(
                 filters=nb_filters * UNITS_FACTOR ** i,
-                kernel_size=kernel_size,
-                strides=CONV_STRIDES,
+                kernel_size=(kernel_size, kernel_size),
+                strides=1,
                 activation="relu",
+                kernel_regularizer=l2(weight_decay),
             )
         )
-        classifier.add(MaxPooling2D(pool_size=CONV_MAX_POOL_SIZE))
+        classifier.add(
+            MaxPooling2D(
+                pool_size=CONV_MAX_POOL_SIZE, data_format="channels_last"
+            )
+        )
     classifier.add(Dropout(dropout_rate))
     classifier.add(Flatten())
 
@@ -61,6 +71,7 @@ def setup(classifier, hyperparameters):
             Dense(
                 units=(int)(STARTING_UNITS * UNITS_FACTOR ** i),
                 activation="relu",
+                kernel_regularizer=l2(weight_decay),
             )
         )
     # Last layer :
