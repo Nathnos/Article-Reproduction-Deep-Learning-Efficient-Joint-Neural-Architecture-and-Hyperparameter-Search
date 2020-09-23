@@ -4,7 +4,7 @@
 from keras.models import Sequential
 from bayes_opt import BayesianOptimization
 
-from CNN_setup import setup, train, get_sets, EPOCHS, TEST_SET_SIZE
+from CNN_setup import setup, train, get_sets, TEST_SET_SIZE
 
 # Hyperparameters bounds
 pbounds = {
@@ -19,6 +19,7 @@ pbounds = {
     "nb_filters": (16, 64),
     "kernel_size": (2, 5),
 }
+
 
 def fit_with(
     lr,
@@ -46,23 +47,36 @@ def fit_with(
     batch_size = int(batch_size)
     classifier = Sequential()
     training_set, test_set = get_sets(batch_size)
-    setup(classifier, hyperparameters)
-    train(classifier, training_set, batch_size)
-    score = classifier.evaluate(
-        test_set, steps=TEST_SET_SIZE / batch_size, verbose=0
-    )
-    return score[1]  # Accuracy
+    try:
+        setup(classifier, hyperparameters)
+        train(classifier, training_set, batch_size)
+        score = classifier.evaluate(
+            # test_set, steps=TEST_SET_SIZE / batch_size, verbose=0 TODO
+            test_set,
+            steps=10,
+            verbose=0,
+        )
+        return score[1]  # Accuracy
+    except Exception as e:
+        return 0  # Do next iter
 
 
-def show_results(bayes_optimizer):
-    for i, res in enumerate(bayes_optimizer.res):
-        print("Iteration {}: \n\t{}".format(i, res))
+def save_results(bayes_optimizer, MODEL_NB):
     print(bayes_optimizer.max)
+    with open(f"tests/best_hyperp.{MODEL_NB}", "w") as f:
+        f.write(str(bayes_optimizer.max))
+    with open(f"tests/full_hyperp.{MODEL_NB}", "w") as f:
+        for i, res in enumerate(bayes_optimizer.res):
+            f.write("Iteration {}: \n\t{}".format(i, res))
 
 
-def searching():
+def searching(MODEL_NB):
     bayes_optimizer = BayesianOptimization(
-        f=fit_with, pbounds=pbounds, verbose=1, random_state=1
+        f=fit_with, pbounds=pbounds, verbose=2, random_state=1
     )
-    bayes_optimizer.maximize(init_points=5, n_iter=3)
-    show_results(bayes_optimizer)
+    try:
+        bayes_optimizer.maximize(init_points=5, n_iter=3)
+    except Exception as e:
+        print(e)
+    # bayes_optimizer.maximize(init_points=10, n_iter=50) TODO
+    save_results(bayes_optimizer, MODEL_NB)

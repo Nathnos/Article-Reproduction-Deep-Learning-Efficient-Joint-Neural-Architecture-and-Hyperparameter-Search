@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import numpy as np
+import argparse
 
 
 def predict(image_location, classifier):
@@ -26,3 +27,25 @@ def init_parser():
         "--predict", "-p", help="An image for the CNNto predict"
     )
     return parser.parse_args()
+
+
+def get_best_params(MODEL_NB):
+    params = []
+    file_name = f"tests/best_hyperp.{MODEL_NB}"
+    with open(file_name, 'r') as file:
+        lines = file.readlines()
+        for l in lines:
+            params.append(float(l))
+    hyperparameters = (
+        params[5],
+        params[7],
+        params[6],
+        params[9],
+        params[3],
+        int(params[1]),
+        int(params[2]),
+        int(params[8]),
+        int(params[4]),
+    )
+    batch_size = int(params[0])
+    return hyperparameters, batch_size

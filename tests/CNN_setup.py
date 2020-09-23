@@ -10,7 +10,8 @@ import numpy as np
 
 
 # Fixed hyperparameters
-EPOCHS = 1
+SEARCHING_EPOCHS = 1  # 100 TODO
+TRAINING_EPOCHS = 1  # 500 TODO
 UNITS_FACTOR = 2  # Each layer double the number of neurones
 MAX_NEURONES = 128
 INPUT_SIZE = (258, 258)  # For pictures
@@ -33,7 +34,6 @@ def setup(classifier, hyperparameters):
         nb_filters,
         kernel_size,
     ) = hyperparameters
-    print("Nouveau Round : ", hyperparameters)
     # First layer, compulsory
     classifier.add(
         Convolution2D(
@@ -108,10 +108,12 @@ def get_sets(batch_size):
     return training_set, test_set
 
 
-def train(classifier, training_set, batch_size):
+def train(classifier, training_set, batch_size, train=False):
+    EPOCHS = TRAINING_EPOCHS if train else SEARCHING_EPOCHS
     classifier.fit(
         training_set,
-        # steps_per_epoch=TRAINING_SET_SIZE / batch_size,
-        steps_per_epoch=5,
+        # steps_per_epoch=TRAINING_SET_SIZE / batch_size, TODO
+        steps_per_epoch=3,
         epochs=EPOCHS,
+        verbose=1,
     )

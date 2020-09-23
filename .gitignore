@@ -4,3 +4,5 @@ env
 tests/model*
 tests/image*.jpeg
 tests/__pycache__
+tests/best_hyperp*
+tests/full_hyperp*
