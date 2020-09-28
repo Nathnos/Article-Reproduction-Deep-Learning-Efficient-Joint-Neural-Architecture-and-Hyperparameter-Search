@@ -37,6 +37,7 @@ def get_best_params(MODEL_NB):
         params = json.load(file)
         for p in params:
             print(p)
+        #
         # lines = file.readlines()
         # for l in lines:
         #     params.append(float(l))
