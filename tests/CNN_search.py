@@ -64,7 +64,7 @@ def fit_with(
 def save_results(bayes_optimizer, MODEL_NB):
     print(bayes_optimizer.max)
     with open(f"tests/best_hyperp.{MODEL_NB}", "w") as f:
-        f.write(str(bayes_optimizer.max))
+        f.write(str(bayes_optimizer.max['params']))
     with open(f"tests/full_hyperp.{MODEL_NB}", "w") as f:
         for i, res in enumerate(bayes_optimizer.res):
             f.write("Iteration {}: \n\t{}".format(i, res))
@@ -75,7 +75,7 @@ def searching(MODEL_NB):
         f=fit_with, pbounds=pbounds, verbose=2, random_state=1
     )
     try:
-        bayes_optimizer.maximize(init_points=5, n_iter=3)
+        bayes_optimizer.maximize(init_points=0, n_iter=1) #5, 3
     except Exception as e:
         print(e)
     # bayes_optimizer.maximize(init_points=10, n_iter=50) TODO

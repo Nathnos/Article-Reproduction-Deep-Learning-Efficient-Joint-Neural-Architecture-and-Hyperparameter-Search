@@ -3,6 +3,7 @@
 
 import numpy as np
 import argparse
+import json
 
 
 def predict(image_location, classifier):
@@ -33,19 +34,23 @@ def get_best_params(MODEL_NB):
     params = []
     file_name = f"tests/best_hyperp.{MODEL_NB}"
     with open(file_name, 'r') as file:
-        lines = file.readlines()
-        for l in lines:
-            params.append(float(l))
-    hyperparameters = (
-        params[5],
-        params[7],
-        params[6],
-        params[9],
-        params[3],
-        int(params[1]),
-        int(params[2]),
-        int(params[8]),
-        int(params[4]),
-    )
-    batch_size = int(params[0])
-    return hyperparameters, batch_size
+        params = json.load(file)
+        for p in params:
+            print(p)
+        # lines = file.readlines()
+        # for l in lines:
+        #     params.append(float(l))
+    # hyperparameters = (
+    #     params[5],
+    #     params[7],
+    #     params[6],
+    #     params[9],
+    #     params[3],
+    #     int(params[1]),
+    #     int(params[2]),
+    #     int(params[8]),
+    #     int(params[4]),
+    # )
+    # batch_size = int(params[0])
+    # return hyperparameters, batch_size
+    return None, None

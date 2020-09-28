@@ -20,6 +20,7 @@ MODEL_NB = 3
 def main():
     hyperparameters, batch_size = get_best_params(MODEL_NB)
     print(hyperparameters, batch_size)
+    # searching(MODEL_NB)
     # args = init_parser()
     # model_name = f"tests/model{MODEL_NB}.h5"
     #
