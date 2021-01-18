@@ -1,5 +1,7 @@
 # Article Reproduction : Deep Learning Efficient Joint Neural Architecture and Hyperparameter Search
 
+I abandoned this project.
+
 ## Informations
 
 Link to the original paper : https://arxiv.org/abs/1807.06906
